@@ -25,11 +25,11 @@ type App struct {
 
 //Initialize Initializes the DB for the project t be ready
 func (a *App) Initialize(user, password, dbname string) {
-	connectionString := fmt.Sprintf("%s:%s@/%s", user, password, dbname)
+	connectionString := fmt.Sprintf("%s:%s@tcp(localhost:3306)/%s", user, password, dbname)
+	fmt.Println(connectionString)
 	var err error
 	a.DB, err = sql.Open("mysql", connectionString)
 	if err != nil {
-		fmt.Println(err)
 		log.Fatal(err)
 	}
 	a.Router = mux.NewRouter()
@@ -86,6 +86,7 @@ func (a *App) getCustomers(w http.ResponseWriter, r *http.Request) {
 }
 
 func (a *App) createCustomer(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("create customer")
 	var c Customer
 	decoder := json.NewDecoder(r.Body)
 	if err := decoder.Decode(&c); err != nil {
@@ -146,7 +147,7 @@ func (a *App) initializeRoutes() {
 	a.Router.HandleFunc("/customer/{id:[0-9]+}", a.getCustomer).Methods("GET")
 	a.Router.HandleFunc("/customer/{id:[0-9]+}", a.updateCustomer).Methods("PUT")
 	a.Router.HandleFunc("/customer/{id:[0-9]+}", a.deleteCustomer).Methods("DELETE")
-	a.Router.HandleFunc("/customer", a.getCustomers).Methods("POST")
+	a.Router.HandleFunc("/customer", a.createCustomer).Methods("POST")
 
 }
 

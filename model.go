@@ -19,17 +19,21 @@ func (c *Customer) getCustomer(db *sql.DB) error {
 }
 
 func (c *Customer) createCustomer(db *sql.DB) error {
-	query := fmt.Sprintf("INSERT INTO customers(name,email,password) VALUES (%s,%s,%s)", c.Name, c.Email, c.Password)
+	fmt.Println(c.Name, c.Email, c.Password)
+	query := fmt.Sprintf("INSERT INTO customers(name,email,password) VALUES ('%s','%s','%s');", c.Name, c.Email, c.Password)
+	fmt.Println(query)
 	_, err := db.Exec(query)
 
 	if err != nil {
+		fmt.Println(err.Error())
 		return err
 	}
 
-	query = fmt.Sprintf("SELECT LAST_INSERTED_ID()")
+	query = fmt.Sprintf("SELECT LAST_INSERT_ID()")
 	err = db.QueryRow(query).Scan(&c.ID)
 
 	if err != nil {
+		fmt.Println(err.Error())
 		return err
 	}
 

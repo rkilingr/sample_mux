@@ -86,7 +86,6 @@ func (a *App) getCustomers(w http.ResponseWriter, r *http.Request) {
 }
 
 func (a *App) createCustomer(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("create customer")
 	var c Customer
 	decoder := json.NewDecoder(r.Body)
 	if err := decoder.Decode(&c); err != nil {

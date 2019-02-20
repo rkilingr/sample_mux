@@ -19,13 +19,10 @@ func (c *Customer) getCustomer(db *sql.DB) error {
 }
 
 func (c *Customer) createCustomer(db *sql.DB) error {
-	fmt.Println(c.Name, c.Email, c.Password)
 	query := fmt.Sprintf("INSERT INTO customers(name,email,password) VALUES ('%s','%s','%s');", c.Name, c.Email, c.Password)
-	fmt.Println(query)
 	_, err := db.Exec(query)
 
 	if err != nil {
-		fmt.Println(err.Error())
 		return err
 	}
 
@@ -33,7 +30,6 @@ func (c *Customer) createCustomer(db *sql.DB) error {
 	err = db.QueryRow(query).Scan(&c.ID)
 
 	if err != nil {
-		fmt.Println(err.Error())
 		return err
 	}
 

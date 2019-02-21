@@ -47,7 +47,7 @@ func (a *App) getCustomer(w http.ResponseWriter, r *http.Request) {
 	if err := customer.getCustomer(a.DB); err != nil {
 		switch err {
 		case sql.ErrNoRows:
-			respondWithError(w, http.StatusBadRequest, "Customer not found")
+			respondWithError(w, http.StatusNotFound, "Customer not found")
 		default:
 			respondWithError(w, http.StatusBadRequest, err.Error())
 		}

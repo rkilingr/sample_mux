@@ -37,12 +37,12 @@ func (c *Customer) createCustomer(db *sql.DB) error {
 }
 
 func (c *Customer) updateCustomer(db *sql.DB) error {
-	query := fmt.Sprintf("UPDATE customers SET name = %s, email = %s, password = %s where id=%d", c.Name, c.Email, c.Password, c.ID)
+	query := fmt.Sprintf("UPDATE customers SET name = '%s', email = '%s', password = '%s' where id='%d'", c.Name, c.Email, c.Password, c.ID)
 	_, err := db.Exec(query)
 	return err
 }
 func (c *Customer) deleteCustomer(db *sql.DB) error {
-	query := fmt.Sprintf("DELETE customers where id=%d", c.ID)
+	query := fmt.Sprintf("DELETE FROM customers WHERE id='%d'", c.ID)
 	_, err := db.Exec(query)
 	return err
 }

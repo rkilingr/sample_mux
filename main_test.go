@@ -147,7 +147,7 @@ func checkResponseCode(t *testing.T, expected, actual int) {
 
 func TestMain(m *testing.M) {
 	a = App{}
-	a.Initialize("ravi", "hello123", "rest_api_example")
+	a.Initialize(DbUser, DbPassword, DbName)
 	ensureTableExists()
 	code := m.Run()
 	clearTable()

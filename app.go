@@ -142,7 +142,7 @@ func (a *App) deleteCustomer(w http.ResponseWriter, r *http.Request) {
 
 //initializeRoutes Initializes all the routes
 func (a *App) initializeRoutes() {
-	a.Router.HandleFunc("/customers", a.getCustomers).Methods("GET")
+	a.Router.HandleFunc("/customer", a.getCustomers).Methods("GET")
 	a.Router.HandleFunc("/customer/{id:[0-9]+}", a.getCustomer).Methods("GET")
 	a.Router.HandleFunc("/customer/{id:[0-9]+}", a.updateCustomer).Methods("PUT")
 	a.Router.HandleFunc("/customer/{id:[0-9]+}", a.deleteCustomer).Methods("DELETE")

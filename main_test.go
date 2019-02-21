@@ -17,7 +17,7 @@ var a App
 //EndPoint Test
 func TestEmptyTable(t *testing.T) {
 	clearTable()
-	req, _ := http.NewRequest("GET", "/customers", nil)
+	req, _ := http.NewRequest("GET", "/customer", nil)
 	response := executeRequest(req)
 	checkResponseCode(t, http.StatusOK, response.Code)
 	if body := response.Body.String(); body != "[]" {

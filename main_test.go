@@ -58,6 +58,16 @@ func TestGetCustomer(t *testing.T) {
 
 }
 
+func TestGetCustomers(t *testing.T) {
+	clearTable()
+	addCustomers(5)
+
+	req, _ := http.NewRequest("GET", "/customer", nil)
+	response := executeRequest(req)
+	checkResponseCode(t, http.StatusOK, response.Code)
+
+}
+
 func addCustomers(count int) {
 	if count < 1 {
 		count = 1

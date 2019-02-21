@@ -49,7 +49,7 @@ func (a *App) getCustomer(w http.ResponseWriter, r *http.Request) {
 		case sql.ErrNoRows:
 			respondWithError(w, http.StatusNotFound, "Customer not found")
 		default:
-			respondWithError(w, http.StatusBadRequest, err.Error())
+			respondWithError(w, http.StatusBadRequest, "Bad request")
 		}
 		return
 	}
@@ -79,7 +79,7 @@ func (a *App) getCustomers(w http.ResponseWriter, r *http.Request) {
 	customers, err := getCustomers(a.DB, start, count)
 
 	if err != nil {
-		respondWithError(w, http.StatusNotFound, err.Error())
+		respondWithError(w, http.StatusNotFound, "Customers not found")
 		return
 	}
 	respondWithJSON(w, http.StatusOK, customers)
@@ -95,7 +95,7 @@ func (a *App) createCustomer(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 
 	if err := c.createCustomer(a.DB); err != nil {
-		respondWithError(w, http.StatusInternalServerError, err.Error())
+		respondWithError(w, http.StatusInternalServerError, "Server Error")
 		return
 	}
 	respondWithJSON(w, http.StatusCreated, c)
@@ -118,7 +118,7 @@ func (a *App) updateCustomer(w http.ResponseWriter, r *http.Request) {
 	c.ID = id
 
 	if err := c.updateCustomer(a.DB); err != nil {
-		respondWithError(w, http.StatusInternalServerError, err.Error())
+		respondWithError(w, http.StatusInternalServerError, "Server Error")
 		return
 	}
 
@@ -135,7 +135,7 @@ func (a *App) deleteCustomer(w http.ResponseWriter, r *http.Request) {
 	c := Customer{ID: id}
 
 	if err := c.deleteCustomer(a.DB); err != nil {
-		respondWithError(w, http.StatusInternalServerError, err.Error())
+		respondWithError(w, http.StatusInternalServerError, "Server error")
 	}
 	respondWithJSON(w, http.StatusOK, map[string]string{"result": "success"})
 }

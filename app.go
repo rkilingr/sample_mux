@@ -79,7 +79,7 @@ func (a *App) getCustomers(w http.ResponseWriter, r *http.Request) {
 	customers, err := getCustomers(a.DB, start, count)
 
 	if err != nil {
-		respondWithError(w, http.StatusInternalServerError, err.Error())
+		respondWithError(w, http.StatusNotFound, err.Error())
 		return
 	}
 	respondWithJSON(w, http.StatusOK, customers)

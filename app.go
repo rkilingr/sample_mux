@@ -12,6 +12,7 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"github.com/jinzhu/gorm"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/gorilla/mux"
@@ -20,15 +21,20 @@ import (
 //App Struct for containing the router and DB for the project
 type App struct {
 	Router *mux.Router
-	DB     *sql.DB
+	DB     *gorm.DB
 }
 
 //Initialize Initializes the DB for the project t be ready
-func (a *App) Initialize(user, password, dbname string) {
-	connectionString := fmt.Sprintf("%s:%s@tcp(localhost:3306)/%s", user, password, dbname)
+func (a *App) Initialize(user, password, dbhost, dbname string) {
+	connectionString := fmt.Sprintf("%s:%s@tcp(%s:3306)/%s?charset=utf8&parseTime=True&loc=Local", user, password, dbhost, dbname)
 	fmt.Println(connectionString)
 	var err error
-	a.DB, err = sql.Open("mysql", connectionString)
+	a.DB, err = gorm.Open("mysql", connectionString)
+	if a.DB.HasTable(&Customer{}){
+		a.DB.AutoMigrate(&Customer{})
+	}else{
+		a.DB.CreateTable(&Customer{})
+	}
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -43,7 +49,7 @@ func (a *App) getCustomer(w http.ResponseWriter, r *http.Request) {
 		respondWithError(w, http.StatusBadRequest, "Invalid User ID")
 		return
 	}
-	customer := Customer{ID: id}
+	customer := Customer{ID: uint(id)}
 	if err := customer.getCustomer(a.DB); err != nil {
 		switch err {
 		case sql.ErrNoRows:
@@ -115,7 +121,7 @@ func (a *App) updateCustomer(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer r.Body.Close()
-	c.ID = id
+	c.ID = uint(id)
 
 	if err := c.updateCustomer(a.DB); err != nil {
 		respondWithError(w, http.StatusInternalServerError, "Server Error")
@@ -132,7 +138,7 @@ func (a *App) deleteCustomer(w http.ResponseWriter, r *http.Request) {
 		respondWithError(w, http.StatusBadRequest, "Invalid Customer ID")
 		return
 	}
-	c := Customer{ID: id}
+	c := Customer{ID: uint(id)}
 
 	if err := c.deleteCustomer(a.DB); err != nil {
 		respondWithError(w, http.StatusInternalServerError, "Server error")

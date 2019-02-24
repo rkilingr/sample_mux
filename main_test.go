@@ -3,7 +3,6 @@ package main
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 	"net/http/httptest"
@@ -73,8 +72,8 @@ func addCustomers(count int) {
 		count = 1
 	}
 	for i := 1; i <= count; i++ {
-		statement := fmt.Sprintf("INSERT INTO customers(name,email,password) VALUES('%s','%s','%s')", "cust "+strconv.Itoa(i), "test"+strconv.Itoa(i)+"@test.com", "pass"+strconv.Itoa(i))
-		a.DB.Exec(statement)
+		statement := "INSERT INTO customers(name,email,password) VALUES(?,?,?)"
+		a.DB.Exec(statement, "cust "+strconv.Itoa(i), "test"+strconv.Itoa(i)+"@test.com", "pass"+strconv.Itoa(i))
 	}
 }
 
@@ -157,7 +156,7 @@ func checkResponseCode(t *testing.T, expected, actual int) {
 
 func TestMain(m *testing.M) {
 	a = App{}
-	a.Initialize(DbUser, DbPassword, DbName)
+	a.Initialize(DbUser, DbPassword, DbHost, DbName)
 	ensureTableExists()
 	code := m.Run()
 	clearTable()
@@ -165,8 +164,8 @@ func TestMain(m *testing.M) {
 }
 
 func ensureTableExists() {
-	if _, err := a.DB.Exec(tableCreationQuery); err != nil {
-		log.Println(err)
+	if !a.DB.HasTable(&Customer{}) {
+		log.Println("Table Does Not Exist")
 	}
 }
 func clearTable() {
